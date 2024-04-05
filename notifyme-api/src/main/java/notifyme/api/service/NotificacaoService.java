@@ -23,6 +23,7 @@ public class NotificacaoService {
         String dataCriacaoString = (String) requestBody.get("dataCriacao");
         LocalDateTime dataCriacao = LocalDateTime.parse(dataCriacaoString, formatter);
 
+        //Para que o título não seja nulo no processo de disserialização
         String titulo = (String) requestBody.get("titulo");
 
         Notificacao novaNotificacao = new Notificacao();
