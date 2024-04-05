@@ -28,7 +28,7 @@ public class Notificacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Size(max = 50)
+    @Size(min = 10, max = 50)
     @NotBlank(message = "Título obrigatório.")
     private String titulo;
 
@@ -36,13 +36,9 @@ public class Notificacao {
     @Column(nullable = false)
     private String mensagem;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy  HH:mm:ss")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
-
-    @DateTimeFormat(pattern = "dd/MM/yyyy  HH:mm:ss")
-    @Column(nullable = false)
-    private LocalDateTime dataEnvio;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
