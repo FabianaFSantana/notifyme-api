@@ -1,17 +1,20 @@
 package notifyme.api.model;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -44,6 +47,9 @@ public class Notificacao {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
+
+    @OneToMany(mappedBy = "notificacao", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<NotificacaoUsuario> usuarios;
     
     
 }
