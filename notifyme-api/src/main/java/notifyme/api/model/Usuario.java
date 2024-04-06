@@ -33,4 +33,5 @@ public class Usuario {
     @Size(min = 10, max = 20, message = "O telefone deve ter 10 a 20 caracteres.")
     @Pattern(regexp = "\\+?[0-9]+", message = "O telefone deve conter apenas números.")
     private String telefone;
+    
 }
