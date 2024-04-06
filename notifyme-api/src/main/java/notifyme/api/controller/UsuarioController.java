@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import notifyme.api.model.Notificacao;
 import notifyme.api.model.Usuario;
 import notifyme.api.repository.UsuarioRepository;
+import notifyme.api.service.NotificacaoService;
 
 @RestController
 @RequestMapping("/usuario")
@@ -25,6 +27,9 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private NotificacaoService notificacaoService;
+    
     @PostMapping
     public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -41,6 +46,12 @@ public class UsuarioController {
     public ResponseEntity<Optional<Usuario>> buscarUsuarioPeloId(@PathVariable("idUsuario") Long idUsuario) {
         return ResponseEntity.status(HttpStatus.OK)
         .body(usuarioRepository.findById(idUsuario));
+    }
+
+    @GetMapping("/exibirListaDeNotificacoes/{idUsuario}")
+    public ResponseEntity<List<Notificacao>> exibirListaNotificacoes(@PathVariable("idUsuario") Long idUsuario) {
+        List<Notificacao> notificacoes = notificacaoService.exibirListaDeNotificacoesDoUsuario(idUsuario);
+        return ResponseEntity.status(HttpStatus.OK).body(notificacoes);
     }
 
     @PutMapping("/{idUsuario}")

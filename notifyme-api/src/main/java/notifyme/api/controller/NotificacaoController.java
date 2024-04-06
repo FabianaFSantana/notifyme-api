@@ -39,6 +39,14 @@ public class NotificacaoController {
         return ResponseEntity.ok("Notificação criada com sucesso.");
     }
 
+    @PostMapping("/{idUsuario}/adicionarNotificacaoListaUsuario/{id}")
+    public ResponseEntity<String> adicionarNotificacaoListaUsuario(@PathVariable("idUsuario") Long idUsuario,
+    @PathVariable("id") Long id) {
+        notificacaoService.adicionarNotificacaoNaLista(idUsuario, id);
+        return ResponseEntity.status(HttpStatus.OK)
+        .body("Notificação adicionada na lista de notificações do Usuário.");
+    }
+
     @GetMapping
     public ResponseEntity<List<Notificacao>> exibirListaDeNotificacoes() {
         return ResponseEntity.status(HttpStatus.OK)
