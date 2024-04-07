@@ -2,6 +2,8 @@ package notifyme.api.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,13 +13,18 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import notifyme.api.constant.Status;
 import notifyme.api.model.Notificacao;
+import notifyme.api.model.Usuario;
 import notifyme.api.repository.NotificacaoRepository;
+import notifyme.api.repository.UsuarioRepository;
 
 @Service
 public class NotificacaoService {
 
     @Autowired
     private NotificacaoRepository notificacaoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     //Para disserializar o formato da data e criar a notificação
     public void criarNotificacao(Map<String, Object> requestBody) {
@@ -59,7 +66,65 @@ public class NotificacaoService {
             throw new EntityNotFoundException("Notificação não foi encontrada.");
         }
         
-       
+    }
+
+    public void adicionarNotificacaoNaLista(Long idUsuario, Long id) {
+        
+        Optional<Usuario> usuarOptional = usuarioRepository.findById(idUsuario);
+        if (usuarOptional.isPresent()) {
+            Usuario usuarioEncont = usuarOptional.get();
+
+            Optional<Notificacao> notifOptional = notificacaoRepository.findById(id);
+            if (notifOptional.isPresent()) {
+                Notificacao notifEncont = notifOptional.get();
+
+                List<Notificacao> notificacoes = usuarioEncont.getNotificacoes();
+                notificacoes.add(notifEncont);
+                usuarioRepository.save(usuarioEncont);
+                
+            } else {
+                throw new EntityNotFoundException("Notificação não econtrada.");
+            }
+            
+        } else {
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+    }
+
+    public List<Notificacao> exibirListaDeNotificacoesDoUsuario(Long idUsuario) {
+        Optional<Usuario> usuarOptional = usuarioRepository.findById(idUsuario);
+        
+        if (usuarOptional.isPresent()) {
+            Usuario usuarioEncont = usuarOptional.get();
+            return usuarioEncont.getNotificacoes();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public String removerNotificacaoDaListaDoUsuario(Long idUsuario, Long id) {
+        
+        Optional<Usuario> usuarOptional = usuarioRepository.findById(idUsuario);
+        if (usuarOptional.isPresent()) {
+            Usuario usuarioEncont = usuarOptional.get();
+
+            Optional<Notificacao> notifOptional = notificacaoRepository.findById(id);
+            if (notifOptional.isPresent()) {
+                Notificacao notifEncont = notifOptional.get();
+
+                List<Notificacao> notificacoes = usuarioEncont.getNotificacoes();
+                notificacoes.remove(notifEncont);
+                usuarioRepository.save(usuarioEncont);
+                return "Notificação removida com sucesso!";
+                
+            } else {
+                return "Notificação não encontrada.";
+            }
+            
+        } else {
+            return "Usuario não encontrado.";
+        }
+
     }
     
 }

@@ -43,5 +43,8 @@ public class Notificacao {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
+
+ 
+    
     
 }
