@@ -101,5 +101,30 @@ public class NotificacaoService {
             return Collections.emptyList();
         }
     }
+
+    public String removerNotificacaoDaListaDoUsuario(Long idUsuario, Long id) {
+        
+        Optional<Usuario> usuarOptional = usuarioRepository.findById(idUsuario);
+        if (usuarOptional.isPresent()) {
+            Usuario usuarioEncont = usuarOptional.get();
+
+            Optional<Notificacao> notifOptional = notificacaoRepository.findById(id);
+            if (notifOptional.isPresent()) {
+                Notificacao notifEncont = notifOptional.get();
+
+                List<Notificacao> notificacoes = usuarioEncont.getNotificacoes();
+                notificacoes.remove(notifEncont);
+                usuarioRepository.save(usuarioEncont);
+                return "Notificação removida com sucesso!";
+                
+            } else {
+                return "Notificação não encontrada.";
+            }
+            
+        } else {
+            return "Usuario não encontrado.";
+        }
+
+    }
     
 }

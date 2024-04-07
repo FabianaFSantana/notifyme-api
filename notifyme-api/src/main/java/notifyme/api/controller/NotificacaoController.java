@@ -86,6 +86,7 @@ public class NotificacaoController {
         }
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizarNotificacao(@PathVariable("id") Long id,
     @RequestBody Map<String, Object> requestBody) {

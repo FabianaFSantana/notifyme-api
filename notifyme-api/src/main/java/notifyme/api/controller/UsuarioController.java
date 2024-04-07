@@ -76,9 +76,19 @@ public class UsuarioController {
 
     @DeleteMapping("/{idUsuario}")
     public ResponseEntity<String> excluirUsuario(@PathVariable("idUsuario") Long idUsuario) {
+        
         usuarioRepository.deleteById(idUsuario);
         return ResponseEntity.status(HttpStatus.OK)
         .body("Usuário excluído com sucesso.");
+
+    }
+
+    @DeleteMapping("/{idUsuario}/removerNotificacao/{id}")
+    public ResponseEntity<String> removerNotificacaoDaLista(@PathVariable("idUsuario") Long idUsuario,
+    @PathVariable("id") Long id) {
+        notificacaoService.removerNotificacaoDaListaDoUsuario(idUsuario, id);
+        return ResponseEntity.status(HttpStatus.OK)
+        .body("Usuario Removido com sucesso.");
     }
 
 
