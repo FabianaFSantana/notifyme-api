@@ -44,7 +44,4 @@ public class Notificacao {
     @Column(nullable = false)
     private Status status;
 
- 
-    
-    
 }

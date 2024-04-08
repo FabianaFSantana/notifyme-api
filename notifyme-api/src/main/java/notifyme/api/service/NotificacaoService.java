@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
-import notifyme.api.constant.Status;
 import notifyme.api.model.Notificacao;
 import notifyme.api.model.Usuario;
 import notifyme.api.repository.NotificacaoRepository;
@@ -39,7 +38,6 @@ public class NotificacaoService {
         novaNotificacao.setTitulo(titulo);
         novaNotificacao.setMensagem((String) requestBody.get("mensagem"));
         novaNotificacao.setDataCriacao(dataCriacao);
-        novaNotificacao.setStatus(Status.CRIADA);
         notificacaoRepository.save(novaNotificacao);
 
     }
