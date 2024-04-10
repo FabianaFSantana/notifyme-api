@@ -71,7 +71,6 @@
     <artifactId>twilio</artifactId>
     <version>8.24.0</version>
 </dependency>
-
 	</dependencies>
 
 	<build>
