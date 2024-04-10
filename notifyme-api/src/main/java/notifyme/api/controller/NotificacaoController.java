@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import notifyme.api.model.Notificacao;
@@ -84,6 +83,14 @@ public class NotificacaoController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{idUsuario}/enviarNotificacaoPorEmail/{id}")
+    public ResponseEntity<String> enviarNotificacaoPorEmail(@PathVariable("idUsuario") Long idUsuario,
+    @PathVariable("id") Long id) {
+        notificacaoService.enviarNotificacaoPorEmail(idUsuario, id);
+        return ResponseEntity.status(HttpStatus.OK)
+        .body("Notificação enviada para o email do usuário.");
     }
 
 
