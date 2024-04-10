@@ -25,6 +25,9 @@ public class NotificacaoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     //Para disserializar o formato da data e criar a notificação
     public void criarNotificacao(Map<String, Object> requestBody) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -121,6 +124,23 @@ public class NotificacaoService {
             
         } else {
             return "Usuario não encontrado.";
+        }
+
+    }
+
+    public void enviarNotificacaoPorEmail(Long idUsuario, Long id) {
+
+        Optional<Usuario> usuarOptional = usuarioRepository.findById(idUsuario);
+        Optional<Notificacao> notifOptional = notificacaoRepository.findById(id);
+
+        if (usuarOptional.isPresent() && notifOptional.isPresent()) {
+            Usuario usuario = usuarOptional.get();
+            Notificacao notificacao = notifOptional.get();
+
+            emailService.enviarNotificacaoPorEmail(usuario, notificacao);
+            
+        } else {
+            throw new EntityNotFoundException("Usuario ou notificação não encontrados.");
         }
 
     }
