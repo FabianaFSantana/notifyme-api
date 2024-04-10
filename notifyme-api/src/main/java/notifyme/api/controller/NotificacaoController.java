@@ -93,6 +93,14 @@ public class NotificacaoController {
         .body("Notificação enviada para o email do usuário.");
     }
 
+    @GetMapping("/{idUsuario}/enviarNotificacaoPorSms/{id}")
+    public ResponseEntity<String> enviarNotificacaoPorSms(@PathVariable("idUsuario") Long idUsuario,
+    @PathVariable("id") Long id) {
+        notificacaoService.enviarNotificacaoPorSms(idUsuario, id);
+        return ResponseEntity.status(HttpStatus.OK)
+        .body("Notificação enviada por SMS para o usuário.");
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizarNotificacao(@PathVariable("id") Long id,

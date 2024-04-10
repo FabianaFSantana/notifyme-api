@@ -28,6 +28,9 @@ public class NotificacaoService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private TwilioSmsService twilioSmsService;
+
     //Para disserializar o formato da data e criar a notificação
     public void criarNotificacao(Map<String, Object> requestBody) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -143,6 +146,22 @@ public class NotificacaoService {
             throw new EntityNotFoundException("Usuario ou notificação não encontrados.");
         }
 
+    }
+
+    public void enviarNotificacaoPorSms(Long idUsuario, Long id) {
+
+        Optional<Usuario> usuarOptional = usuarioRepository.findById(idUsuario);
+        Optional<Notificacao> notifOptional = notificacaoRepository.findById(id);
+
+        if (usuarOptional.isPresent() && notifOptional.isPresent()) {
+            Usuario usuario = usuarOptional.get();
+            Notificacao notificacao = notifOptional.get();
+
+            twilioSmsService.enviarNotificacaoPorSms(usuario, notificacao);
+
+        } else {
+            throw new EntityNotFoundException("Usuário ou notificação não encontrados.");
+        }
     }
     
 }
