@@ -1,5 +1,6 @@
 package notifyme.api.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -7,11 +8,17 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
+import jakarta.persistence.EntityNotFoundException;
+import notifyme.api.constant.Status;
 import notifyme.api.model.Notificacao;
 import notifyme.api.model.Usuario;
+import notifyme.api.repository.NotificacaoRepository;
 
 @Service
 public class TwilioSmsService {
+
+    @Autowired
+    private NotificacaoRepository notificacaoRepository;
     
     @Value("${twilio.account.sid}")
     private String accountSid;
@@ -21,13 +28,20 @@ public class TwilioSmsService {
 
     private final String THUILIO_PHONE_NUMBER = "+13344497765";
 
-    public void enviarSms(String numeroDestino, String mensagem) {
+    public boolean enviarSms(String numeroDestino, String mensagem) {
         Twilio.init(accountSid, authToken);
 
-        Message message = Message.creator(
-            new PhoneNumber(numeroDestino), 
-            new PhoneNumber(THUILIO_PHONE_NUMBER), 
-            mensagem).create();
+        try {
+            Message message = Message.creator(
+                new PhoneNumber(numeroDestino), 
+                new PhoneNumber(THUILIO_PHONE_NUMBER), 
+                mensagem).create();
+            return message.getStatus() == Message.Status.SENT;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+       
     }
 
     public void enviarNotificacaoPorSms(Usuario usuario, Notificacao notificacao) {
@@ -37,6 +51,15 @@ public class TwilioSmsService {
                              "Mensagem: " + notificacao.getMensagem() + "\n" +
                              "Data: " + notificacao.getDataCriacao() + "\n";
         
-        enviarSms(usuario.getTelefone(), mensagemSms);
+        boolean envioBemSucedido = enviarSms(usuario.getTelefone(), mensagemSms);
+
+        if (envioBemSucedido) {
+
+            notificacao.setStatus(Status.ENVIADA);
+            notificacaoRepository.save(notificacao);
+            
+        } else {
+            throw new EntityNotFoundException("Não foi possível enviar a notificação.");
+        }
     }
 }
