@@ -28,7 +28,7 @@ public class TwilioSmsService {
 
     private final String THUILIO_PHONE_NUMBER = "+13344497765";
 
-    public boolean enviarSms(String numeroDestino, String mensagem) {
+    public void enviarSms(String numeroDestino, String mensagem) {
         Twilio.init(accountSid, authToken);
 
         try {
@@ -36,30 +36,35 @@ public class TwilioSmsService {
                 new PhoneNumber(numeroDestino), 
                 new PhoneNumber(THUILIO_PHONE_NUMBER), 
                 mensagem).create();
-            return message.getStatus() == Message.Status.SENT;
+        
+
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+           
         }
        
     }
 
     public void enviarNotificacaoPorSms(Usuario usuario, Notificacao notificacao) {
 
-        String mensagemSms = "Olá " + usuario.getNome() + "! Você recebeu uma nova mensagem! \n\n" +
+        if (!notificacao.getStatus().equals(Status.CRIADA)) {
+            throw new IllegalStateException("A notificação esperando para ser enviada.");
+        }
+
+        try {
+            String mensagemSms = "Olá " + usuario.getNome() + "! Você recebeu uma nova mensagem! \n\n" +
                              "Título: " + notificacao.getTitulo() + "\n" +
                              "Mensagem: " + notificacao.getMensagem() + "\n" +
                              "Data: " + notificacao.getDataCriacao() + "\n";
         
-        boolean envioBemSucedido = enviarSms(usuario.getTelefone(), mensagemSms);
-
-        if (envioBemSucedido) {
+            enviarSms(usuario.getTelefone(), mensagemSms);
 
             notificacao.setStatus(Status.ENVIADA);
             notificacaoRepository.save(notificacao);
             
-        } else {
-            throw new EntityNotFoundException("Não foi possível enviar a notificação.");
+        } catch (Exception e) {
+            throw new RuntimeException("Falha ao enviar a notificação por SMS", e);
         }
+        
     }
 }
