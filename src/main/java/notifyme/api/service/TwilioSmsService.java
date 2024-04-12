@@ -36,11 +36,9 @@ public class TwilioSmsService {
                 new PhoneNumber(numeroDestino), 
                 new PhoneNumber(THUILIO_PHONE_NUMBER), 
                 mensagem).create();
-        
-
+    
         } catch (Exception e) {
             e.printStackTrace();
-           
         }
        
     }
@@ -48,7 +46,7 @@ public class TwilioSmsService {
     public void enviarNotificacaoPorSms(Usuario usuario, Notificacao notificacao) {
 
         if (!notificacao.getStatus().equals(Status.CRIADA)) {
-            throw new IllegalStateException("A notificação esperando para ser enviada.");
+            throw new IllegalStateException("Notificação esperando para ser enviada.");
         }
 
         try {

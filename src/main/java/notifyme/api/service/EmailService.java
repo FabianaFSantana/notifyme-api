@@ -9,14 +9,19 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import notifyme.api.constant.Status;
 import notifyme.api.model.Notificacao;
 import notifyme.api.model.Usuario;
+import notifyme.api.repository.NotificacaoRepository;
 
 @Service
 public class EmailService {
     
     @Autowired
     private JavaMailSender javaMailSender;
+
+    @Autowired
+    private NotificacaoRepository notificacaoRepository;
 
     
     @Value("${spring.mail.host}")
@@ -45,18 +50,30 @@ public class EmailService {
 
     public void enviarNotificacaoPorEmail(Usuario usuario, Notificacao notificacao) throws MailException {
 
-        String destinatario = usuario.getEmail();
-        String assunto = "Nova notificação: " + notificacao.getTitulo();
-        String corpo = "Olá, " + usuario.getNome() + "\n\n Você recebeu uma nova notificação.\n\n" +
-                       "Título: " + notificacao.getTitulo() + "\n" +
-                       "Mensagem: " + notificacao.getMensagem() + "\n" +
-                       "Data: " + notificacao.getDataCriacao() + "\n";
-        
-        try {
-            enviarEmail(usuario, notificacao);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!notificacao.getStatus().equals(Status.CRIADA)) {
+            throw new IllegalStateException("Notificação esperando paraser enviada.");
         }
+
+        try {
+            String destinatario = usuario.getEmail();
+            String assunto = "Nova notificação: " + notificacao.getTitulo();
+            String corpo = "Olá, " + usuario.getNome() + "\n\n Você recebeu uma nova notificação.\n\n" +
+                        "Título: " + notificacao.getTitulo() + "\n" +
+                        "Mensagem: " + notificacao.getMensagem() + "\n" +
+                        "Data: " + notificacao.getDataCriacao() + "\n";
+        
+            try {
+                enviarEmail(usuario, notificacao);
+                notificacao.setStatus(Status.ENVIADA);
+                notificacaoRepository.save(notificacao);
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Falha ao enviar a notificação por email", e);
+        }
+        
         
     }
 }
