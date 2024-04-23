@@ -8,7 +8,7 @@ Api Rest para um sistema de notificações
 </div>
 
 ## Descrição do Projeto
-O Notifyme é um API REST desenvolvido com Spring Boot para servir como backend de um sistema de notificações o qual pode enviar mensagens via email e SMS para o usuário. Ele oferece recursos para a manipulação de usuáros e notiicações, assim como seu envio, proporcionando uma interface para interação com o banco de dados MySQL.
+O Notifyme é um API REST desenvolvido com Spring Boot para servir como backend de um sistema de notificações o qual pode enviar mensagens via email e SMS para o usuário. Ele oferece recursos para a manipulação de usuários e notificações, assim como seu envio, proporcionando uma interface para interação com o banco de dados MySQL.
 
 ## Configuração do Ambiente
 
