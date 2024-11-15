@@ -21,7 +21,7 @@ import notifyme.api.constant.Status;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "notificacao")
+@Entity(name = "tb_notificacoes")
 public class Notificacao {
 
     @Id

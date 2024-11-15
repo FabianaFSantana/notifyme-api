@@ -2,7 +2,12 @@ package notifyme.api.model;
 
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -20,13 +25,11 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "tb_usuarios")
-public class Usuario {
+public class Usuario implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,5 +69,53 @@ public class Usuario {
 
     @Column(nullable = false)
     private Boolean usuarioExterno;
+
+    public Usuario() {
+        this.administrador = Boolean.FALSE;
+        this.usuarioExterno = Boolean.TRUE;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+       if (administrador) {
+        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+       }
+
+       if (usuarioExterno) {
+        return List.of(new SimpleGrantedAuthority("ROLE_EXT_USER"));
+       }
+
+       return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+       return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+      return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
     
 }

@@ -15,9 +15,9 @@ import notifyme.api.model.Notificacao;
 @Repository
 public interface NotificacaoRepository extends JpaRepository<Notificacao, Long> {
     
-    @Query("SELECT n FROM notificacao n WHERE n.dataCriacao = :dataCriacao")
+    @Query("SELECT n FROM tb_notificacoes n WHERE n.dataCriacao = :dataCriacao")
     Optional<Notificacao> findByDataCriacao(@Param("dataCriacao") LocalDateTime dataCriacao);
 
-    @Query("SELECT n FROM notificacao n WHERE DATE(n.dataCriacao) = :data")
+    @Query("SELECT n FROM tb_notificacoes n WHERE DATE(n.dataCriacao) = :data")
     List<Notificacao> findByListDataCriacao(@Param("data") LocalDate data);
 }
