@@ -25,6 +25,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import notifyme.api.dto.UsuarioDTO;
 
 @Data
 @AllArgsConstructor
@@ -73,6 +74,20 @@ public class Usuario implements UserDetails{
     public Usuario() {
         this.administrador = Boolean.FALSE;
         this.usuarioExterno = Boolean.TRUE;
+    }
+
+    public UsuarioDTO converterUsuarioDTO() {
+        UsuarioDTO dto = new UsuarioDTO();
+
+        dto.setNome(nome);
+        dto.setDataNascimento(dataNascimento);
+        dto.setEmail(email);
+        dto.setEndereco(endereco);
+        dto.setAdministrador(administrador);
+        dto.setUsuarioExterno(usuarioExterno);
+        dto.setToken(null);;
+
+        return dto;
     }
 
     @Override
